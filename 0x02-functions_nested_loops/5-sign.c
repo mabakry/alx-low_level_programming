@@ -2,10 +2,9 @@
 
 
 	/**
-	 * print_sign - Determines if the input number.
-	 *
+	 * print_sign - Entry point 
+	 * Descreption: Determines if the input number.
 	 * @n: the input number as an intger.
-	 *
 	 * Return: 1 is greater than zero.
 	 * 0 is zero.
 	 *  -1 is less than zero.
