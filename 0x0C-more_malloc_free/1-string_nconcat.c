@@ -29,10 +29,17 @@ char *string_nconcat(char *s1, char *s2, unsigned int n)
 		i++;
 	}
 	while (n < len2 && i < (len1 + n))
-	       p[i++] = s2[j++];
+	{
+		p[i] = s2[j];
+		i++;
+		j++;
+	}
 	while (n >= len2 && i < (len1 + len2))
-	       p[i++] = s2[j++];
-
+	{
+		p[i] = s2[j];
+		i++;
+		j++;
+	}
 	p[i] = '\0';
 	return (p);
 }
