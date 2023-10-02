@@ -1,5 +1,43 @@
 #include "main.h"
 
+
+/**
+ * _close - close file descriptors
+ * @fd: file to be closed
+ */
+
+void _close(int fd)
+{
+	int x;
+
+	x = close(fd);
+
+	if (x == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
+	}
+}
+
+/**
+ * *_buffer - create a buffer
+ * @file: name of the file of the buffer
+ * Return: pointer the buffer
+ */
+
+char *_buffer(char *file)
+{
+	char *b;
+
+	b = malloc(sizeof(char) * 1024);
+	if (b == NULL)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file);
+		exit(99);
+	}
+	return (b);
+}
+
 /**
  * main - copies the content of a file to another file.
  * @argc: arguments number
@@ -18,18 +56,13 @@ int main(int argc, char *argv[])
 		exit(97);
 	}
 
-	buf = malloc(sizeof(char) * 1024);
-	if (buf == NULL)
-	{
-		dprintf(STDERR_FILENO, "Can't write to %s\n", argv[2]);
-		exit(99);
-	}
-
+	buf = _buffer(argv[2]);
 	from = open(argv[1], O_RDONLY);
 	rd = read(from, buf, 1024);
 	if (from == -1 || rd == -1)
 	{
 		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+		free(buf);
 		exit(98);
 	}
 
@@ -38,20 +71,11 @@ int main(int argc, char *argv[])
 	if (to == -1 || wr == -1)
 	{
 		dprintf(STDERR_FILENO, "Can't write to %s\n", argv[2]);
+		free(buf);
 		exit(99);
 	}
 	free(buf);
-	if (close(from) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %s\n", argv[1]);
-		exit(100);
-	}
-
-	if (close(to) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %s\n", argv[2]);
-		exit(100);
-	}
+	_close(from);
+	_close(to);
 	return (0);
 }
-
