@@ -59,21 +59,28 @@ int main(int argc, char *argv[])
 	buf = _buffer(argv[2]);
 	from = open(argv[1], O_RDONLY);
 	rd = read(from, buf, 1024);
-	if (from == -1 || rd == -1)
+	to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+
+	while (rd > 0)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-		free(buf);
-		exit(98);
+		if (from == -1 || rd == -1)
+			{
+				dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+				free(buf);
+				exit(98);
+			}
+
+		wr = write(to, buf, rd);
+		if (to == -1 || wr == -1)
+			{
+				dprintf(STDERR_FILENO, "Can't write to %s\n", argv[2]);
+				free(buf);
+				exit(99);
+			}
+		rd = read(from, buf, 1024);
+		to = open(argv[2], O_WRONLY | O_APPEND);
 	}
 
-	to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
-	wr = write(to, buf, rd);
-	if (to == -1 || wr == -1)
-	{
-		dprintf(STDERR_FILENO, "Can't write to %s\n", argv[2]);
-		free(buf);
-		exit(99);
-	}
 	free(buf);
 	_close(from);
 	_close(to);
