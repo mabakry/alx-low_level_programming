@@ -47,7 +47,7 @@ char *_buffer(char *file)
 
 int main(int argc, char *argv[])
 {
-	int to, from, rd, wr;
+	int from, to, rd, wr;
 	char *buf;
 
 	if (argc != 3)
@@ -63,25 +63,31 @@ int main(int argc, char *argv[])
 
 	do {
 		if (from == -1 || rd == -1)
-			{
-				dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-				free(buf);
-				exit(98);
-			}
+		{
+			dprintf(STDERR_FILENO,
+				"Error: Can't read from file %s\n", argv[1]);
+			free(buf);
+			exit(98);
+		}
 
 		wr = write(to, buf, rd);
 		if (to == -1 || wr == -1)
-			{
-				dprintf(STDERR_FILENO, "Can't write to %s\n", argv[2]);
-				free(buf);
-				exit(99);
-			}
+		{
+			dprintf(STDERR_FILENO,
+				"Error: Can't write to %s\n", argv[2]);
+			free(buf);
+			exit(99);
+		}
+
 		rd = read(from, buf, 1024);
 		to = open(argv[2], O_WRONLY | O_APPEND);
+
 	} while (rd > 0);
 
 	free(buf);
 	_close(from);
 	_close(to);
+
 	return (0);
 }
+
